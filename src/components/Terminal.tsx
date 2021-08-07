@@ -33,7 +33,10 @@ export default function Terminal() {
         <div className="flex-1" />
       </header>
 
-      <main onClick={handleTerminalClick} className="flex-1 relative p-2 overflow-x-auto overscroll-contain">
+      <main
+        onClick={handleTerminalClick}
+        className="flex-1 text-xs relative p-2 overflow-x-auto overscroll-contain space-y-1"
+      >
         {state.context.stdout.map((line, key) => (
           <div key={key}>{line}</div>
         ))}
@@ -63,7 +66,7 @@ interface TerminalContext {
   inputRef: any
   inputValue: string
   currentDir: string
-  stdout: string[]
+  stdout: React.ReactNode[]
 }
 
 const terminalMachine = createMachine<TerminalContext>(
@@ -88,9 +91,52 @@ const terminalMachine = createMachine<TerminalContext>(
       handleInputChange: assign((ctx, { payload }) => {
         return { inputValue: payload }
       }),
-      handleSubmitInput: assign((ctx, { payload }) => {
-        return { stdout: [...ctx.stdout, ctx.inputValue], inputValue: '' }
+      handleSubmitInput: assign((ctx) => {
+        const command = ctx.inputValue.split(' ')[0]
+
+        switch (command) {
+          case 'ls':
+            return { stdout: [...ctx.stdout, ctx.inputValue], inputValue: '' }
+
+          case 'whoami':
+            return {
+              stdout: [...ctx.stdout, `> ${ctx.inputValue}`, <CommandWhoAmI />],
+              inputValue: '',
+            }
+
+          default:
+            return {
+              stdout: [...ctx.stdout, <CommandNotFound command={command} />],
+              inputValue: '',
+            }
+        }
       }),
     },
   }
+)
+
+const CommandNotFound = ({ command }) => (
+  <div className="text-red-500">krall.dev: command not found: ${command}</div>
+)
+
+const CommandWhoAmI = () => (
+  <div className="flex items-center p-2 mt-2 border-2 border-dashed border-red-400">
+    <img
+      src="https://avatars.githubusercontent.com/u/17836325?v=4"
+      className="h-20 w-20 object-contain rounded-lg border-2 border-blue-400"
+    />
+
+    <div className="ml-3">
+      <p className="text-base font-bold text-purple-400">Benjamin Krall</p>
+
+      <p className="text-gray-300">
+        I build apps with JavaScript. Sometimes I put them on the internet and other times I put them on an
+        App Store. If you're interested in working with me or learning more about the cool shit I build you
+        can reach out to anytime at{' '}
+        <a target="_blank" href="mailto:benjaminkrall@gmail.com" className="underline">
+          benjaminkrall@gmail.com
+        </a>
+      </p>
+    </div>
+  </div>
 )
