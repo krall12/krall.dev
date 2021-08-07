@@ -1,20 +1,42 @@
 import React, { useRef } from 'react'
-import { createMachine, assign } from 'xstate'
-import { useMachine } from '@xstate/react'
+import { useAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
+
+export const terminalValueAtom = atomWithStorage('krall.dev:terminalValue', '')
+export const currentDirAtom = atomWithStorage('krall.dev:currentDir', '')
+export const stdoutAtom = atomWithStorage<Array<string | { component: string; props?: any }>>(
+  'krall.dev:stdout',
+  [`Last login: ${new Date().toLocaleString()}`]
+)
 
 export default function Terminal() {
   const inputRef = useRef(null)
-  const [state, send] = useMachine(terminalMachine, {
-    context: {
-      inputRef,
-      inputValue: '',
-      currentDir: '~',
-      stdout: [`Last login: ${new Date().toLocaleString()}`],
-    },
-  })
+
+  const [terminalValue, setTerminalValue] = useAtom(terminalValueAtom)
+  const [currentDir, setCurrentDir] = useAtom(currentDirAtom)
+  const [stdout, setStdout] = useAtom(stdoutAtom)
 
   const handleTerminalClick = () => {
     if (document.activeElement !== inputRef.current) inputRef.current?.focus()
+  }
+
+  const handleTerminalSubmit = () => {
+    const command = terminalValue.split(' ')[0]
+    setTerminalValue('')
+
+    switch (command) {
+      case 'clear':
+        setStdout([])
+        break
+
+      case 'whoami':
+        setStdout([...stdout, '> whoami', { component: 'CommandWhoAmI' }])
+        break
+
+      default:
+        setStdout([...stdout, { component: 'CommandNotFound', props: { command } }])
+        break
+    }
   }
 
   return (
@@ -37,8 +59,8 @@ export default function Terminal() {
         onClick={handleTerminalClick}
         className="flex-1 text-xs relative p-2 overflow-x-auto overscroll-contain space-y-1"
       >
-        {state.context.stdout.map((line, key) => (
-          <div key={key}>{line}</div>
+        {stdout.map((line, key) => (
+          <div key={key}>{typeof line === 'string' ? line : <ParseComponentIntoCommand {...line} />}</div>
         ))}
       </main>
 
@@ -46,15 +68,15 @@ export default function Terminal() {
         onClick={handleTerminalClick}
         className="flex items-center border-2 border-transparent p-3 focus-within:border-green-500 rounded-b-lg"
       >
-        <span className="text-blue-300">{state.context.currentDir}</span>
+        <span className="text-blue-300">{currentDir}</span>
         <input
           ref={inputRef}
           type="text"
           className="ml-2 flex-1 font-light bg-black block w-full"
-          value={state.context.inputValue}
-          onChange={(event) => send({ type: 'INPUT_CHANGE', payload: event.target.value })}
+          value={terminalValue}
+          onChange={(event) => setTerminalValue(event.target.value)}
           onKeyUp={(event) => {
-            if (event.key === 'Enter') send({ type: 'SUBMIT_INPUT' })
+            if (event.key === 'Enter') handleTerminalSubmit()
           }}
         />
       </div>
@@ -62,61 +84,20 @@ export default function Terminal() {
   )
 }
 
-interface TerminalContext {
-  inputRef: any
-  inputValue: string
-  currentDir: string
-  stdout: React.ReactNode[]
+const ParseComponentIntoCommand = ({ component, props }: { component: string; props?: any }) => {
+  switch (component) {
+    case 'CommandWhoAmI':
+      return <CommandWhoAmI />
+
+    case 'CommandNotFound':
+      return <CommandNotFound {...props} />
+    default:
+      return null
+  }
 }
 
-const terminalMachine = createMachine<TerminalContext>(
-  {
-    id: 'terminal-machine',
-    initial: 'input_focused',
-    states: {
-      input_focused: {
-        on: {
-          INPUT_CHANGE: {
-            actions: ['handleInputChange'],
-          },
-          SUBMIT_INPUT: {
-            actions: ['handleSubmitInput'],
-          },
-        },
-      },
-    },
-  },
-  {
-    actions: {
-      handleInputChange: assign((ctx, { payload }) => {
-        return { inputValue: payload }
-      }),
-      handleSubmitInput: assign((ctx) => {
-        const command = ctx.inputValue.split(' ')[0]
-
-        switch (command) {
-          case 'ls':
-            return { stdout: [...ctx.stdout, ctx.inputValue], inputValue: '' }
-
-          case 'whoami':
-            return {
-              stdout: [...ctx.stdout, `> ${ctx.inputValue}`, <CommandWhoAmI />],
-              inputValue: '',
-            }
-
-          default:
-            return {
-              stdout: [...ctx.stdout, <CommandNotFound command={command} />],
-              inputValue: '',
-            }
-        }
-      }),
-    },
-  }
-)
-
 const CommandNotFound = ({ command }) => (
-  <div className="text-red-500">krall.dev: command not found: ${command}</div>
+  <div className="text-red-500">krall.dev: command not found: {command}</div>
 )
 
 const CommandWhoAmI = () => (
