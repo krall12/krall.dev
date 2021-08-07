@@ -1,14 +1,17 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { createMachine, assign } from 'xstate'
 import { useMachine } from '@xstate/react'
-import { atom, useAtom } from 'jotai'
-
-const terminalValueAtom = atom('')
 
 export default function Terminal() {
   const inputRef = useRef(null)
-  const [terminalValue, setTerminalValue] = useAtom(terminalValueAtom)
-  const [state, send] = useMachine(terminalMachine)
+  const [state, send] = useMachine(terminalMachine, {
+    context: {
+      inputRef,
+      inputValue: '',
+      currentDir: '~',
+      stdout: [`Last login: ${new Date().toLocaleString()}`],
+    },
+  })
 
   const handleTerminalClick = () => {
     if (document.activeElement !== inputRef.current) inputRef.current?.focus()
@@ -31,30 +34,63 @@ export default function Terminal() {
       </header>
 
       <main onClick={handleTerminalClick} className="flex-1 relative p-2 overflow-x-auto overscroll-contain">
-        Last login: {new Date().toLocaleString()}
+        {state.context.stdout.map((line, key) => (
+          <div key={key}>{line}</div>
+        ))}
       </main>
 
       <div
         onClick={handleTerminalClick}
         className="flex items-center border-2 border-transparent p-3 focus-within:border-green-500 rounded-b-lg"
       >
-        <span className="text-blue-300">~</span>
+        <span className="text-blue-300">{state.context.currentDir}</span>
         <input
           ref={inputRef}
           type="text"
           className="ml-2 flex-1 font-light bg-black block w-full"
-          value={terminalValue}
-          onChange={(event) => setTerminalValue(event.target.value)}
+          value={state.context.inputValue}
+          onChange={(event) => send({ type: 'INPUT_CHANGE', payload: event.target.value })}
+          onKeyUp={(event) => {
+            if (event.key === 'Enter') send({ type: 'SUBMIT_INPUT' })
+          }}
         />
       </div>
     </div>
   )
 }
 
-const terminalMachine = createMachine({
-  id: 'terminal-machine',
-  initial: 'idle',
-  states: {
-    idle: {},
+interface TerminalContext {
+  inputRef: any
+  inputValue: string
+  currentDir: string
+  stdout: string[]
+}
+
+const terminalMachine = createMachine<TerminalContext>(
+  {
+    id: 'terminal-machine',
+    initial: 'input_focused',
+    states: {
+      input_focused: {
+        on: {
+          INPUT_CHANGE: {
+            actions: ['handleInputChange'],
+          },
+          SUBMIT_INPUT: {
+            actions: ['handleSubmitInput'],
+          },
+        },
+      },
+    },
   },
-})
+  {
+    actions: {
+      handleInputChange: assign((ctx, { payload }) => {
+        return { inputValue: payload }
+      }),
+      handleSubmitInput: assign((ctx, { payload }) => {
+        return { stdout: [...ctx.stdout, ctx.inputValue], inputValue: '' }
+      }),
+    },
+  }
+)
