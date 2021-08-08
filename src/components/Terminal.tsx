@@ -2,17 +2,17 @@ import cn from 'classnames'
 import React, { useEffect, useRef } from 'react'
 import { useAtom } from 'jotai'
 
-import { currentDirAtom, selectedProgramAtom, stdoutAtom, terminalValueAtom } from 'atoms'
+import { currentDirAtom, stdoutAtom, terminalArg0Atom, terminalArg1Atom, terminalValueAtom } from 'atoms'
 import commands from 'utils/commands'
 import files from 'utils/files'
 
 export default function Terminal() {
   const scrollRef = useRef(null)
 
-  const [selectedProgram, setSelectedProgram] = useAtom(selectedProgramAtom)
-
+  const [currentDir] = useAtom(currentDirAtom)
   const [terminalValue, setTerminalValue] = useAtom(terminalValueAtom)
-  const [currentDir, setCurrentDir] = useAtom(currentDirAtom)
+  const [terminalArg0] = useAtom(terminalArg0Atom)
+  const [terminalArg1] = useAtom(terminalArg1Atom)
   const [stdout, setStdout] = useAtom(stdoutAtom)
 
   const handleTerminalClick = () => {
@@ -20,29 +20,22 @@ export default function Terminal() {
   }
 
   const handleTerminalSubmit = () => {
-    const terminalCommand = terminalValue.split(' ')[0]
     setTerminalValue('')
 
     try {
-      setStdout(commands[terminalCommand].storeOutput)
+      setStdout(commands[terminalArg0].storeOutput)
     } catch {
-      setStdout([...stdout, { command: 'notFound', props: { command: terminalCommand } }])
+      setStdout([...stdout, { command: 'notFound', props: { command: terminalArg0 } }])
     }
   }
 
-  const handleTerminalTab = () => {
-    const terminalCommand = terminalValue.split(' ')[0]
+  const handleTerminalTab = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    event.preventDefault()
 
-    if (terminalCommand !== 'open') {
-      return
-    }
+    if (terminalArg0 !== 'open') return
 
-    const arg1 = terminalValue.split(' ')[1]
-    const found = files.find((file) => file.filename.toLowerCase().startsWith(arg1.toLowerCase()))
-
-    if (found) {
-      setTerminalValue(`open ${found.filename}`)
-    }
+    const found = files.find((file) => file.filename.toLowerCase().startsWith(terminalArg1.toLowerCase()))
+    if (found) setTerminalValue(`open ${found.filename}`)
   }
 
   // maintain bottom scroll position whenever the output updates
@@ -89,9 +82,10 @@ export default function Terminal() {
           placeholder="/ to focus"
           value={terminalValue}
           onChange={(event) => setTerminalValue(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Tab') handleTerminalTab(event)
+          }}
           onKeyUp={(event) => {
-            event.preventDefault()
-            if (event.key === 'Tab') handleTerminalTab()
             if (event.key === 'Enter') handleTerminalSubmit()
           }}
         />

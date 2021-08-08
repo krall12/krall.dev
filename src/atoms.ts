@@ -1,3 +1,4 @@
+import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 // the selected window can either be the terminal or the program which displays
@@ -13,6 +14,14 @@ export const selectedProgramAtom = atomWithStorage<string>('krall.dev:selected-p
 
 // holds the value to the terminals main input
 export const terminalValueAtom = atomWithStorage<string>('krall.dev:terminal-value', '')
+
+// this is the cli command portion of whats typed into the temrinal.
+// if "open file" was input, this would grab and return "open".
+export const terminalArg0Atom = atom((get) => get(terminalValueAtom).trim().split(' ')[0])
+
+// this is the first arg of whats typed into the temrinal.
+// if "open file" was input, this would grab and return "file".
+export const terminalArg1Atom = atom((get) => get(terminalValueAtom).trim().split(' ')[1])
 
 // the current dir of the terminal
 export const currentDirAtom = atomWithStorage<string>('krall.dev:current-dir', '~')
