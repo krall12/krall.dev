@@ -29,7 +29,7 @@ const commands: Record<string, Command> = {
       </div>
     ),
     helpLabel: 'help',
-    helpDescription: 'Displays help',
+    helpDescription: "What you're looking at",
   },
   ls: {
     storeOutput: (current) => [...current, { command: 'ls' }],

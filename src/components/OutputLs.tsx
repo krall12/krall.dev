@@ -1,23 +1,20 @@
 import { selectedProgramAtom } from 'atoms'
 import { useAtom } from 'jotai'
+import files from 'utils/files'
 
 const OutputLs = () => {
   const [, setSelectedProgram] = useAtom(selectedProgramAtom)
 
   return (
-    <div className="grid gap-5 grid-cols-4">
-      <button
-        onClick={() => setSelectedProgram('README.md')}
-        className="col-span-1 hover:underline cursor-pointer"
-      >
-        README.md
-      </button>
-      <button
-        onClick={() => setSelectedProgram('stack.md')}
-        className="col-span-1 hover:underline cursor-pointer"
-      >
-        stack.md
-      </button>
+    <div className="grid gap-3 grid-cols-4 ml-4">
+      {files.map((file) => (
+        <button
+          onClick={() => setSelectedProgram(file.filename)}
+          className="text-left col-span-1 hover:underline cursor-pointer"
+        >
+          {file.filename}
+        </button>
+      ))}
     </div>
   )
 }

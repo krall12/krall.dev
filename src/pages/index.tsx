@@ -1,12 +1,12 @@
 import React from 'react'
 import Terminal from 'components/Terminal'
-import Program from 'components/Program'
+import Window from 'components/Window'
 
 export default function Home() {
   return (
     <main className="relative h-screen">
       <Terminal />
-      <Program />
+      <Window />
     </main>
   )
 }
