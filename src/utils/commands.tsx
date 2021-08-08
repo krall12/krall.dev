@@ -21,20 +21,35 @@ const commands: Record<string, Command> = {
     helpDescription: 'Clears the terminals output',
   },
   help: {
-    storeOutput: (current) => [...current, '> help', { command: 'help' }],
-    component: () => <OutputHelp />,
+    storeOutput: (current) => [...current, { command: 'help' }],
+    component: () => (
+      <div>
+        <p className="mb-1">{'>'} help</p>
+        <OutputHelp />
+      </div>
+    ),
     helpLabel: 'help',
     helpDescription: 'Displays help',
   },
   ls: {
-    storeOutput: (current) => [...current, '> ls', { command: 'ls' }],
-    component: () => <OutputLs />,
+    storeOutput: (current) => [...current, { command: 'ls' }],
+    component: () => (
+      <div>
+        <p className="mb-1">{'>'} ls</p>
+        <OutputLs />
+      </div>
+    ),
     helpLabel: 'ls',
     helpDescription: 'Lists the current directories files',
   },
   whoami: {
-    storeOutput: (current) => [...current, '> whoami', { command: 'whoami' }],
-    component: () => <OutputWhoAmI />,
+    storeOutput: (current) => [...current, { command: 'whoami' }],
+    component: () => (
+      <div>
+        <p className="mb-1">{'>'} whoami</p>
+        <OutputWhoAmI />
+      </div>
+    ),
     helpLabel: 'whoami',
     helpDescription: 'Get to know me',
   },

@@ -6,8 +6,8 @@ const OutputHelp = () => {
   const [_, setTerminalValue] = useAtom(terminalValueAtom)
 
   return (
-    <div className="border-2 border-dashed border-yellow-300 bg-yellow-300 bg-opacity-10 p-2">
-      <p>Welcome to the krall.dev terminal. Run any of the following commands to find learn more.</p>
+    <div className="bg-yellow-300 bg-opacity-10 p-2">
+      <p>Hey there. Welcome.</p>
 
       <dl className="ml-4 mt-2">
         {Object.entries(commands).map(([key, command]) =>

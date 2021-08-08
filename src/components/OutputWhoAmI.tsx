@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
 const OutputWhoAmI = () => (
-  <div className="flex items-start p-3 border-2 border-dashed border-blue-400 bg-blue-500 bg-opacity-10">
+  <div className="flex items-start p-3 bg-blue-500 bg-opacity-10">
     <div className="rounded-lg border border-blue-400 overflow-hidden flex items-center justify-center">
       <Image
         height={280}

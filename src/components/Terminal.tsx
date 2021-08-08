@@ -1,3 +1,4 @@
+import cn from 'classnames'
 import React, { useEffect, useRef } from 'react'
 import { useAtom } from 'jotai'
 
@@ -52,10 +53,10 @@ export default function Terminal() {
 
       <main
         ref={scrollRef}
-        className="flex-1 text-xs relative p-2 overflow-x-auto overscroll-contain space-y-1"
+        className="flex-1 text-xs relative p-2 overflow-x-auto overscroll-contain space-y-2"
       >
         {stdout.map((line, key) => (
-          <div key={key} className="animate-fade-in">
+          <div key={key} className={cn('animate-fade-in', key !== 0 && 'border-t border-gray-800 pt-2')}>
             {typeof line === 'string' ? line : commands[line.command].component(line.props)}
           </div>
         ))}
