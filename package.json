@@ -6,6 +6,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.15",
     "@types/classnames": "^2.3.1",
     "@xstate/react": "^1.5.1",
     "classnames": "^2.3.1",
@@ -16,6 +19,7 @@
     "xstate": "^4.23.1"
   },
   "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@types/react": "^17.0.16",
     "autoprefixer": "^10.2.6",
     "postcss": "^8.3.5",
