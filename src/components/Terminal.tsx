@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react'
-import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+import { useAtom } from 'jotai'
 
-export const terminalValueAtom = atomWithStorage('krall.dev:terminalValue', '')
-export const currentDirAtom = atomWithStorage('krall.dev:currentDir', '')
+export const selectedProgramAtom = atomWithStorage('krall.dev:selected-program', '')
+
+export const terminalValueAtom = atomWithStorage('krall.dev:terminal-value', '')
+export const currentDirAtom = atomWithStorage('krall.dev:current-dir', '~')
 export const stdoutAtom = atomWithStorage<Array<string | { component: string; props?: any }>>(
   'krall.dev:stdout',
   [`Last login: ${new Date().toLocaleString()}`]
@@ -12,6 +14,8 @@ export const stdoutAtom = atomWithStorage<Array<string | { component: string; pr
 export default function Terminal() {
   const inputRef = useRef(null)
   const scrollRef = useRef(null)
+
+  const [selectedProgram, setSelectedProgram] = useAtom(selectedProgramAtom)
 
   const [terminalValue, setTerminalValue] = useAtom(terminalValueAtom)
   const [currentDir, setCurrentDir] = useAtom(currentDirAtom)
@@ -63,7 +67,7 @@ export default function Terminal() {
         </div>
 
         <div>
-          <h1 className="text-xs text-gray-100">krall.dev -- Welcome</h1>
+          <h1 className="text-xs text-gray-100">Terminal -- krall.dev</h1>
         </div>
 
         <div className="flex-1" />
@@ -71,7 +75,6 @@ export default function Terminal() {
 
       <main
         ref={scrollRef}
-        onClick={handleTerminalClick}
         className="flex-1 text-xs relative p-2 overflow-x-auto overscroll-contain space-y-1"
       >
         {stdout.map((line, key) => (
@@ -83,13 +86,13 @@ export default function Terminal() {
 
       <div
         onClick={handleTerminalClick}
-        className="flex items-center border-2 border-transparent p-3 focus-within:border-green-500 rounded-b-lg"
+        className="flex items-center border-2 p-3 border-green-800 rounded-b-lg focus-within:border-green-300 focus-within:bg-green-300 focus-within:bg-opacity-20 transition-colors"
       >
         <span className="text-blue-300">{currentDir}</span>
         <input
           ref={inputRef}
           type="text"
-          className="ml-2 flex-1 font-light bg-black block w-full"
+          className="ml-2 flex-1 font-light bg-transparent block w-full outline-none"
           value={terminalValue}
           onChange={(event) => setTerminalValue(event.target.value)}
           onKeyUp={(event) => {
@@ -182,9 +185,23 @@ const CommandHelp = () => (
   </div>
 )
 
-const CommandLs = () => (
-  <div className="grid gap-5 grid-cols-4">
-    <div className="col-span-1 hover:underline cursor-pointer">README.md</div>
-    <div className="col-span-1 hover:underline cursor-pointer">stack.md</div>
-  </div>
-)
+const CommandLs = () => {
+  const [, setSelectedProgram] = useAtom(selectedProgramAtom)
+
+  return (
+    <div className="grid gap-5 grid-cols-4">
+      <button
+        onClick={() => setSelectedProgram('README.md')}
+        className="col-span-1 hover:underline cursor-pointer"
+      >
+        README.md
+      </button>
+      <button
+        onClick={() => setSelectedProgram('stack.md')}
+        className="col-span-1 hover:underline cursor-pointer"
+      >
+        stack.md
+      </button>
+    </div>
+  )
+}
