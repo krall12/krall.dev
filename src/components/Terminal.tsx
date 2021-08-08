@@ -6,7 +6,6 @@ import { currentDirAtom, selectedProgramAtom, stdoutAtom, terminalValueAtom } fr
 import commands from 'utils/commands'
 
 export default function Terminal() {
-  const inputRef = useRef(null)
   const scrollRef = useRef(null)
 
   const [selectedProgram, setSelectedProgram] = useAtom(selectedProgramAtom)
@@ -16,7 +15,7 @@ export default function Terminal() {
   const [stdout, setStdout] = useAtom(stdoutAtom)
 
   const handleTerminalClick = () => {
-    if (document.activeElement !== inputRef.current) inputRef.current?.focus()
+    document.getElementById('terminal-input').focus()
   }
 
   const handleTerminalSubmit = () => {
@@ -68,8 +67,8 @@ export default function Terminal() {
       >
         <span className="text-blue-300">{currentDir}</span>
         <input
-          ref={inputRef}
           type="text"
+          id="terminal-input"
           className="ml-2 flex-1 font-light bg-transparent block w-full outline-none"
           placeholder="/ to focus"
           value={terminalValue}
