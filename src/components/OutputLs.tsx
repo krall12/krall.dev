@@ -1,19 +1,20 @@
+import cn from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { selectedProgramAtom } from 'atoms'
 import { useAtom } from 'jotai'
 import files from 'utils/files'
 
 const OutputLs = () => {
-  const [, setSelectedProgram] = useAtom(selectedProgramAtom)
+  const [selectedProgram, setSelectedProgram] = useAtom(selectedProgramAtom)
 
   return (
-    <div className="grid gap-3 grid-cols-4 ml-4">
+    <div className="grid gap-2 grid-cols-4 ml-4">
       {files.map((file) =>
         file.externalLink ? (
           <a
             target="_blank"
             href={file.externalLink}
-            className="flex items-center text-left col-span-1 hover:underline"
+            className="flex items-center p-1 text-left col-span-1 hover:underline"
           >
             {file.filename}
             {file.icon && <FontAwesomeIcon icon={file.icon} className="ml-1" size="xs" />}
@@ -21,7 +22,10 @@ const OutputLs = () => {
         ) : (
           <button
             onClick={() => setSelectedProgram(file.filename)}
-            className="flex items-center text-left col-span-1 hover:underline"
+            className={cn(
+              'flex items-center p-1 text-left col-span-1 hover:underline',
+              selectedProgram === file.filename && 'bg-green-800'
+            )}
           >
             {file.filename}
             {file.icon && <FontAwesomeIcon icon={file.icon} className="ml-1" size="xs" />}
