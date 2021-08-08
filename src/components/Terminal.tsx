@@ -63,7 +63,7 @@ export default function Terminal() {
 
       <div
         onClick={handleTerminalClick}
-        className="flex items-center border-2 p-3 border-green-800 rounded-b-lg focus-within:border-green-300 focus-within:bg-green-300 focus-within:bg-opacity-20 transition-colors hover:bg-opacity-25"
+        className="flex items-center border-2 p-3 border-green-900 rounded-b-lg focus-within:border-green-300 focus-within:bg-green-300 focus-within:bg-opacity-20 transition-colors hover:bg-opacity-25"
       >
         <span className="text-blue-300">{currentDir}</span>
         <input
