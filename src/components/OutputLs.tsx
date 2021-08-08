@@ -12,6 +12,7 @@ const OutputLs = () => {
       {files.map((file) =>
         file.externalLink ? (
           <a
+            key={file.filename}
             target="_blank"
             href={file.externalLink}
             className="flex items-center p-1 text-left col-span-1 hover:underline"
@@ -21,6 +22,7 @@ const OutputLs = () => {
           </a>
         ) : (
           <button
+            key={file.filename}
             onClick={() => setSelectedProgram(file.filename)}
             className={cn(
               'flex items-center p-1 text-left col-span-1 hover:underline',

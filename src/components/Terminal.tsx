@@ -4,6 +4,7 @@ import { useAtom } from 'jotai'
 
 import { currentDirAtom, selectedProgramAtom, stdoutAtom, terminalValueAtom } from 'atoms'
 import commands from 'utils/commands'
+import files from 'utils/files'
 
 export default function Terminal() {
   const scrollRef = useRef(null)
@@ -26,6 +27,21 @@ export default function Terminal() {
       setStdout(commands[terminalCommand].storeOutput)
     } catch {
       setStdout([...stdout, { command: 'notFound', props: { command: terminalCommand } }])
+    }
+  }
+
+  const handleTerminalTab = () => {
+    const terminalCommand = terminalValue.split(' ')[0]
+
+    if (terminalCommand !== 'open') {
+      return
+    }
+
+    const arg1 = terminalValue.split(' ')[1]
+    const found = files.find((file) => file.filename.toLowerCase().startsWith(arg1.toLowerCase()))
+
+    if (found) {
+      setTerminalValue(`open ${found.filename}`)
     }
   }
 
@@ -74,6 +90,8 @@ export default function Terminal() {
           value={terminalValue}
           onChange={(event) => setTerminalValue(event.target.value)}
           onKeyUp={(event) => {
+            event.preventDefault()
+            if (event.key === 'Tab') handleTerminalTab()
             if (event.key === 'Enter') handleTerminalSubmit()
           }}
         />
