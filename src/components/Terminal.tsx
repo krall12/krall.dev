@@ -1,15 +1,7 @@
 import React, { useEffect, useRef } from 'react'
-import { atomWithStorage } from 'jotai/utils'
 import { useAtom } from 'jotai'
 
-export const selectedProgramAtom = atomWithStorage('krall.dev:selected-program', '')
-
-export const terminalValueAtom = atomWithStorage('krall.dev:terminal-value', '')
-export const currentDirAtom = atomWithStorage('krall.dev:current-dir', '~')
-export const stdoutAtom = atomWithStorage<Array<string | { component: string; props?: any }>>(
-  'krall.dev:stdout',
-  [`Last login: ${new Date().toLocaleString()}`]
-)
+import { currentDirAtom, selectedProgramAtom, stdoutAtom, terminalValueAtom } from 'atoms'
 
 export default function Terminal() {
   const inputRef = useRef(null)

@@ -1,7 +1,6 @@
 import React from 'react'
 import { useAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
-import { selectedProgramAtom } from 'components/Terminal'
+import { selectedProgramAtom } from 'atoms'
 
 export default function Program() {
   const [selectedProgram, setSelectedProgram] = useAtom(selectedProgramAtom)
