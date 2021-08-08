@@ -12,7 +12,7 @@ export const currentDirAtom = atomWithStorage('krall.dev:current-dir', '~')
 
 // the output of the terminal. each commands output is stored in a seperate item
 // in the array. if the value is cleared its set to a help message .
-export const stdoutAtom = atomWithStorage<Array<string | { component: string; props?: any }>>(
+export const stdoutAtom = atomWithStorage<Array<string | { command: string; props?: any }>>(
   'krall.dev:stdout',
   [`Last login: ${new Date().toLocaleString()}`]
 )
