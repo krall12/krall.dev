@@ -6,7 +6,7 @@ type File = {
   icon: IconDefinition
   filename: string
 } & (
-  | { windowComponent: () => React.ReactNode; externalLink?: never }
+  | { windowComponent: () => JSX.Element; externalLink?: never }
   | { externalLink: string; windowComponent?: never }
 )
 
@@ -14,7 +14,28 @@ const files: File[] = [
   {
     icon: faMarkdown,
     filename: 'README.md',
-    windowComponent: () => <p>window here</p>,
+    windowComponent: () => (
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos eaque autem itaque aliquid possimus
+        deleniti delectus necessitatibus atque accusantium officiis. Perferendis ab consequuntur quaerat
+        aliquid eligendi dolores voluptates id provident! Lorem ipsum dolor sit amet consectetur adipisicing
+        elit. Quos eaque autem itaque aliquid possimus deleniti delectus necessitatibus atque accusantium
+        officiis. Perferendis ab consequuntur quaerat aliquid eligendi dolores voluptates id provident! Lorem
+        ipsum dolor sit amet consectetur adipisicing elit. Quos eaque autem itaque aliquid possimus deleniti
+        delectus necessitatibus atque accusantium officiis. Perferendis ab consequuntur quaerat aliquid
+        eligendi dolores voluptates id provident! Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quos eaque autem itaque aliquid possimus deleniti delectus necessitatibus atque accusantium officiis.
+        Perferendis ab consequuntur quaerat aliquid eligendi dolores voluptates id provident! Lorem ipsum
+        dolor sit amet consectetur adipisicing elit. Quos eaque autem itaque aliquid possimus deleniti
+        delectus necessitatibus atque accusantium officiis. Perferendis ab consequuntur quaerat aliquid
+        eligendi dolores voluptates id provident! Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Quos eaque autem itaque aliquid possimus deleniti delectus necessitatibus atque accusantium officiis.
+        Perferendis ab consequuntur quaerat aliquid eligendi dolores voluptates id provident! Lorem ipsum
+        dolor sit amet consectetur adipisicing elit. Quos eaque autem itaque aliquid possimus deleniti
+        delectus necessitatibus atque accusantium officiis. Perferendis ab consequuntur quaerat aliquid
+        eligendi dolores voluptates id provident!
+      </p>
+    ),
   },
   {
     icon: faMarkdown,

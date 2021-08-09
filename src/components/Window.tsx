@@ -10,14 +10,14 @@ export default function Window() {
     return null
   }
 
-  const WindowComponent = files.find((file) => file.filename === selectedProgram)?.windowComponent
+  const WindowComponent = files.find((file) => file.filename === selectedProgram).windowComponent
 
   if (!WindowComponent) {
     return null
   }
 
   return (
-    <div className="bg-gray-800 bg-opacity-90 w-[600px] rounded-lg shadow-lg fixed flex flex-col top-8 right-5 hover:cursor-text animate-fade-in">
+    <div className="bg-gray-800 mx-auto bg-opacity-90 w-[600px] rounded-lg shadow-lg fixed flex flex-col top-8 left-1/4 overflow-hidden hover:cursor-text animate-fade-in">
       <header className="flex items-center justify-between p-2 bg-gray-700 rounded-t-lg">
         <div className="flex flex-1 items-center space-x-2">
           <button

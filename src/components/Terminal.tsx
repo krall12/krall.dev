@@ -2,13 +2,21 @@ import cn from 'classnames'
 import React, { useEffect, useRef } from 'react'
 import { useAtom } from 'jotai'
 
-import { currentDirAtom, stdoutAtom, terminalArg0Atom, terminalArg1Atom, terminalValueAtom } from 'atoms'
+import {
+  currentDirAtom,
+  stdoutAtom,
+  terminalArg0Atom,
+  terminalArg1Atom,
+  terminalValueAtom,
+  selectedWindowAtom,
+} from 'atoms'
 import commands from 'utils/commands'
 import files from 'utils/files'
 
 export default function Terminal() {
   const scrollRef = useRef(null)
 
+  const [selectedWindow] = useAtom(selectedWindowAtom)
   const [currentDir] = useAtom(currentDirAtom)
   const [terminalValue, setTerminalValue] = useAtom(terminalValueAtom)
   const [terminalArg0] = useAtom(terminalArg0Atom)
@@ -34,7 +42,7 @@ export default function Terminal() {
 
     if (terminalArg0 !== 'open') return
 
-    const found = files.find((file) => file.filename.toLowerCase().startsWith(terminalArg1.toLowerCase()))
+    const found = files.find((file) => file.filename.toLowerCase().startsWith(terminalArg1?.toLowerCase()))
     if (found) setTerminalValue(`open ${found.filename}`)
   }
 
@@ -44,7 +52,12 @@ export default function Terminal() {
   }, [stdout])
 
   return (
-    <div className="bg-black bg-opacity-90 w-[600px] rounded-lg shadow-lg fixed flex flex-col top-5 left-5 bottom-5 hover:cursor-text animate-fade-in">
+    <div
+      className={cn(
+        'bg-black bg-opacity-90 w-[600px] rounded-lg shadow-lg fixed flex flex-col top-5 left-5 h-5/6 hover:cursor-text animate-fade-in',
+        selectedWindow === 'terminal' ? 'relative z-10' : 'opacity-10'
+      )}
+    >
       <header className="flex items-center justify-between p-2 bg-gray-700 rounded-t-lg">
         <div className="flex flex-1 items-center space-x-2">
           <button className="bg-red-500 hover:bg-red-400 h-3 w-3 block rounded-full" />
