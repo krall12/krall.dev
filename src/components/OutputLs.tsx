@@ -1,10 +1,12 @@
 import cn from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { selectedProgramAtom } from 'atoms'
+import { selectedProgramAtom, selectedWindowAtom } from 'atoms'
+import { useUpdateAtom } from 'jotai/utils'
 import { useAtom } from 'jotai'
 import files from 'utils/files'
 
 const OutputLs = () => {
+  const setSelectedWindow = useUpdateAtom(selectedWindowAtom)
   const [selectedProgram, setSelectedProgram] = useAtom(selectedProgramAtom)
 
   return (
@@ -23,7 +25,11 @@ const OutputLs = () => {
         ) : (
           <button
             key={file.filename}
-            onClick={() => setSelectedProgram(file.filename)}
+            onClick={(event) => {
+              event.stopPropagation()
+              setSelectedWindow('program')
+              setSelectedProgram(file.filename)
+            }}
             className={cn(
               'flex items-center p-1 text-left col-span-1 hover:underline',
               selectedProgram === file.filename && 'bg-green-800'
