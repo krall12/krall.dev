@@ -1,9 +1,11 @@
 import React from 'react'
-import Terminal from 'components/Terminal'
-import Window from 'components/Window'
+import dynamic from 'next/dynamic'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { selectedProgramAtom, selectedWindowAtom, stdoutAtom } from 'atoms'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+
+const Terminal = dynamic(() => import('components/Terminal'), { ssr: false })
+const Program = dynamic(() => import('components/Program'), { ssr: false })
 
 export default function Home() {
   const setSelectedWindow = useUpdateAtom(selectedWindowAtom)
@@ -27,12 +29,7 @@ export default function Home() {
   return (
     <main className="relative h-screen">
       <Terminal />
-
-      {selectedProgram ? (
-        <Window type="program" title={selectedProgram} className="left-64">
-          lorem
-        </Window>
-      ) : null}
+      <Program />
     </main>
   )
 }

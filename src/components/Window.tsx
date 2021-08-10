@@ -26,7 +26,7 @@ export default function Window(props: WindowProps) {
       onClick={() => setSelectedWindow(props.type)}
       className={cn(
         'bg-black bg-opacity-90 w-[600px] rounded-lg fixed flex flex-col top-5 left-5 h-5/6 hover:cursor-text transition-opacity',
-        selectedWindow === props.type ? 'relative z-10 shadow-lg ' : 'opacity-40',
+        selectedWindow === props.type ? 'relative z-10 shadow-lg ' : 'opacity-50',
         props.className
       )}
     >
