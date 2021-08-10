@@ -2,11 +2,13 @@ import React from 'react'
 import Terminal from 'components/Terminal'
 import Window from 'components/Window'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { useAtom } from 'jotai'
-import { stdoutAtom } from 'atoms'
+import { selectedProgramAtom, selectedWindowAtom, stdoutAtom } from 'atoms'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
 export default function Home() {
-  const [_, setStdout] = useAtom(stdoutAtom)
+  const setSelectedWindow = useUpdateAtom(selectedWindowAtom)
+  const selectedProgram = useAtomValue(selectedProgramAtom)
+  const setStdout = useUpdateAtom(stdoutAtom)
 
   // clear the terminal on command+k
   useHotkeys('command+k', (e) => {
@@ -19,12 +21,18 @@ export default function Home() {
   useHotkeys('/', (e) => {
     e.preventDefault()
     document.getElementById('terminal-input').focus()
+    setSelectedWindow('terminal')
   })
 
   return (
     <main className="relative h-screen">
       <Terminal />
-      <Window />
+
+      {selectedProgram ? (
+        <Window type="program" title={selectedProgram} className="left-64">
+          lorem
+        </Window>
+      ) : null}
     </main>
   )
 }
